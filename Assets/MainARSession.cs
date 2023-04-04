@@ -2,7 +2,9 @@ using Niantic.ARDK.AR;
 using Niantic.ARDK.AR.Anchors;
 using Niantic.ARDK.AR.ARSessionEventArgs;
 using Niantic.ARDK.AR.Configuration;
+using Niantic.ARDK.AR.HitTest;
 using Niantic.ARDK.Utilities;
+using Niantic.ARDK.Utilities.Input.Legacy;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +13,9 @@ using UnityEngine;
 public class MainARSession : MonoBehaviour
 {
     public GameObject plane_prefab;
+    public GameObject spawn_prefab;
+    public float spawn_vertical_offset;
+    public Camera active_camera;
     private IARSession _ar_session;
     private readonly Dictionary<Guid, GameObject> planeLookup = new Dictionary<Guid, GameObject>();
 
@@ -65,4 +70,47 @@ public class MainARSession : MonoBehaviour
             }
         }
     }
+
+    private void Update()
+    {
+        SpawnAtHitPoint();
+    }
+
+    // Taken from Niantic's Hit Test sample
+    void SpawnAtHitPoint()
+    {
+        // Check if the user's touched the screen
+        var touch = PlatformAgnosticInput.GetTouch(0);
+        if (touch.phase != TouchPhase.Began)
+            return;
+
+        // If the ARSession isn't currently running, its CurrentFrame property will be null
+        var currentFrame = _ar_session.CurrentFrame;
+        if (currentFrame == null)
+            return;
+
+        // Hit test from the touch position
+        var results =
+            _ar_session.CurrentFrame.HitTest
+            (
+                active_camera.pixelWidth,
+                active_camera.pixelHeight,
+                touch.position,
+                ARHitTestResultType.All
+            );
+
+        if (results.Count == 0)
+            return;
+
+        var closestHit = results[0];
+        var position = closestHit.WorldTransform.ToPosition();
+
+        // The position y-value offset needed to spawn your prefab at the
+        // correct height (not intersecting with the plane) will depend on
+        // where the center of your prefab is.
+        position.y += spawn_vertical_offset;
+
+        GameObject.Instantiate(spawn_prefab, position, Quaternion.identity);
+    }
+
 }
