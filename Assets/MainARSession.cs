@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting.FullSerializer;
+using Niantic.ARDK.Extensions;
 
 public class MainARSession : MonoBehaviour
 {
@@ -17,6 +19,7 @@ public class MainARSession : MonoBehaviour
     public TextMeshProUGUI text;
     public float spawn_vertical_offset;
     public Camera active_camera;
+    public ARDepthManager depth_manager;
     private Boolean _have_not_printed = true;
     private Touch _last_touch_type;
     private IARSession _ar_session;
@@ -37,10 +40,12 @@ public class MainARSession : MonoBehaviour
         configuration.IsLightEstimationEnabled = true;
         configuration.PlaneDetection = PlaneDetection.Horizontal;
         configuration.IsAutoFocusEnabled = true;
-        configuration.IsDepthEnabled = false;
+        configuration.IsDepthEnabled = true;
+        configuration.DepthTargetFrameRate = 10;
         configuration.IsSharedExperienceEnabled = true;
 
         _ar_session.Run(configuration);
+        depth_manager.ToggleDebugVisualization(true);
 
         _ar_session.AnchorsAdded += OnAnchorsAdded;
         _ar_session.AnchorsUpdated += OnAnchorsUpdated;

@@ -572,6 +572,7 @@ MonoBehaviour:
   text: {fileID: 1229142664}
   spawn_vertical_offset: 0
   active_camera: {fileID: 963194227}
+  depth_manager: {fileID: 556849114}
 --- !u!4 &775923414
 Transform:
   m_ObjectHideFlags: 0
