@@ -6,15 +6,12 @@ using Niantic.ARDK.AR.HitTest;
 using Niantic.ARDK.Utilities;
 using Niantic.ARDK.Utilities.Input.Legacy;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class MainARSession : MonoBehaviour
 {
-    private string prefix = "MainARSession";
     public GameObject plane_prefab;
     public GameObject spawn_prefab;
     public TextMeshProUGUI text;
@@ -27,7 +24,6 @@ public class MainARSession : MonoBehaviour
 
     void MyDebugPrint(string msg)
     {
-        Debug.Log(prefix + " " + msg);
         text.text = msg;
     }
     // Start is called before the first frame update
