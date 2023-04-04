@@ -16,6 +16,8 @@ public class MainARSession : MonoBehaviour
     public GameObject spawn_prefab;
     public float spawn_vertical_offset;
     public Camera active_camera;
+    private Boolean _have_not_printed = true;
+    private Touch _last_touch_type;
     private IARSession _ar_session;
     private readonly Dictionary<Guid, GameObject> planeLookup = new Dictionary<Guid, GameObject>();
 
@@ -23,6 +25,7 @@ public class MainARSession : MonoBehaviour
     void Start()
     {
         _ar_session = ARSessionFactory.Create();
+        Debug.Log("Logs work!");
 
         var configuration = ARWorldTrackingConfigurationFactory.Create();
         configuration.WorldAlignment = WorldAlignment.Gravity;
@@ -81,13 +84,27 @@ public class MainARSession : MonoBehaviour
     {
         // Check if the user's touched the screen
         var touch = PlatformAgnosticInput.GetTouch(0);
+        if (_have_not_printed)
+        {
+            Debug.Log("We get to here! Default touch type is " + touch);
+            _have_not_printed = false;
+        } else if (!touch.Equals(_last_touch_type))
+        {
+            Debug.Log("Print type is " + touch);
+        }
+        _last_touch_type = touch;
+
         if (touch.phase != TouchPhase.Began)
             return;
+
+        Debug.Log("Began touch!");
 
         // If the ARSession isn't currently running, its CurrentFrame property will be null
         var currentFrame = _ar_session.CurrentFrame;
         if (currentFrame == null)
             return;
+
+        Debug.Log("Current frame passed");
 
         // Hit test from the touch position
         var results =
@@ -101,6 +118,8 @@ public class MainARSession : MonoBehaviour
 
         if (results.Count == 0)
             return;
+
+        Debug.Log("Count was " + results.Count);
 
         var closestHit = results[0];
         var position = closestHit.WorldTransform.ToPosition();

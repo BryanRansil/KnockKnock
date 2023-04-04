@@ -398,9 +398,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8ab1b039bd51104cb15794695b44fa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plane_prefab: {fileID: 6393518860155691392, guid: 80793f39775ab534b999f55fd2b02ef3, type: 3}
-  spawn_prefab: {fileID: 695473627297227429, guid: 766a465559f45664383d9e8acb68bfe7, type: 3}
-  spawn_vertical_offset: 10
+  plane_prefab: {fileID: 3728592323626759305, guid: 7063641af6e2e964e8f7951e9e7b72f1, type: 3}
+  spawn_prefab: {fileID: 1430626716059794651, guid: eb0df34bfc9ff764fb8af826c9722aa2, type: 3}
+  spawn_vertical_offset: 0
   active_camera: {fileID: 963194227}
 --- !u!4 &775923414
 Transform:
