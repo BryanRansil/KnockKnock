@@ -9,11 +9,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class MainARSession : MonoBehaviour
 {
+    private string prefix = "MainARSession";
     public GameObject plane_prefab;
     public GameObject spawn_prefab;
+    public TextMeshProUGUI text;
     public float spawn_vertical_offset;
     public Camera active_camera;
     private Boolean _have_not_printed = true;
@@ -21,11 +25,16 @@ public class MainARSession : MonoBehaviour
     private IARSession _ar_session;
     private readonly Dictionary<Guid, GameObject> planeLookup = new Dictionary<Guid, GameObject>();
 
+    void MyDebugPrint(string msg)
+    {
+        Debug.Log(prefix + " " + msg);
+        text.text = msg;
+    }
     // Start is called before the first frame update
     void Start()
     {
         _ar_session = ARSessionFactory.Create();
-        Debug.Log("Logs work!");
+        MyDebugPrint("Logs work!");
 
         var configuration = ARWorldTrackingConfigurationFactory.Create();
         configuration.WorldAlignment = WorldAlignment.Gravity;
@@ -86,25 +95,25 @@ public class MainARSession : MonoBehaviour
         var touch = PlatformAgnosticInput.GetTouch(0);
         if (_have_not_printed)
         {
-            Debug.Log("We get to here! Default touch type is " + touch);
+            MyDebugPrint("We get to here! Default touch type is " + touch);
             _have_not_printed = false;
         } else if (!touch.Equals(_last_touch_type))
         {
-            Debug.Log("Print type is " + touch);
+            MyDebugPrint("Print type is " + touch);
         }
         _last_touch_type = touch;
 
         if (touch.phase != TouchPhase.Began)
             return;
 
-        Debug.Log("Began touch!");
+        MyDebugPrint("Began touch!");
 
         // If the ARSession isn't currently running, its CurrentFrame property will be null
         var currentFrame = _ar_session.CurrentFrame;
         if (currentFrame == null)
             return;
 
-        Debug.Log("Current frame passed");
+        MyDebugPrint("Current frame passed");
 
         // Hit test from the touch position
         var results =
@@ -119,7 +128,7 @@ public class MainARSession : MonoBehaviour
         if (results.Count == 0)
             return;
 
-        Debug.Log("Count was " + results.Count);
+        MyDebugPrint("Count was " + results.Count);
 
         var closestHit = results[0];
         var position = closestHit.WorldTransform.ToPosition();
