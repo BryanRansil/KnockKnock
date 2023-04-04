@@ -33,7 +33,6 @@ public class MainARSession : MonoBehaviour
     void Start()
     {
         _ar_session = ARSessionFactory.Create();
-        MyDebugPrint("Logs work!");
 
         var configuration = ARWorldTrackingConfigurationFactory.Create();
         configuration.WorldAlignment = WorldAlignment.Gravity;
@@ -94,20 +93,10 @@ public class MainARSession : MonoBehaviour
     {
         // Check if the user's touched the screen
         var touch = PlatformAgnosticInput.GetTouch(0);
-        if (_have_not_printed)
-        {
-            MyDebugPrint("We get to here! Default touch type is " + touch);
-            _have_not_printed = false;
-        } else if (!touch.Equals(_last_touch_type))
-        {
-            MyDebugPrint("Print type is " + touch);
-        }
         _last_touch_type = touch;
 
         if (touch.phase != TouchPhase.Began)
             return;
-
-        MyDebugPrint("Began touch!");
 
         // If the ARSession isn't currently running, its CurrentFrame property will be null
         var currentFrame = _ar_session.CurrentFrame;
@@ -129,8 +118,6 @@ public class MainARSession : MonoBehaviour
         if (results.Count == 0)
             return;
 
-        MyDebugPrint("Count was " + results.Count);
-
         var closestHit = results[0];
         var position = closestHit.WorldTransform.ToPosition();
 
@@ -140,6 +127,11 @@ public class MainARSession : MonoBehaviour
         position.y += spawn_vertical_offset;
 
         GameObject.Instantiate(spawn_prefab, position, Quaternion.identity);
+
+        if (_ar_session.CurrentFrame.Depth != null)
+        {
+            MyDebugPrint(_ar_session.CurrentFrame.Depth.NearDistance.ToString());
+        }
     }
 
 }
