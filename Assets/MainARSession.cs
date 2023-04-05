@@ -86,6 +86,7 @@ public class MainARSession : MonoBehaviour
     private void Update()
     {
         SpawnAtHitPoint();
+        CalculateDepthInfo();
     }
 
     // Taken from Niantic's Hit Test sample
@@ -127,11 +128,23 @@ public class MainARSession : MonoBehaviour
         position.y += spawn_vertical_offset;
 
         GameObject.Instantiate(spawn_prefab, position, Quaternion.identity);
+    }
 
-        if (_ar_session.CurrentFrame.Depth != null)
-        {
-            MyDebugPrint(_ar_session.CurrentFrame.Depth.NearDistance.ToString());
-        }
+    void CalculateDepthInfo()
+    {
+        if (_ar_session.CurrentFrame.Depth == null)
+            return;
+
+        var actual_depth_buffer = _ar_session.CurrentFrame.Depth.Interpolate(
+            _ar_session.CurrentFrame.Camera,
+            active_camera.pixelWidth,
+            active_camera.pixelHeight);
+
+        int total_size = checked((int)(actual_depth_buffer.Width * actual_depth_buffer.Height));
+        var bottom_right_depth = actual_depth_buffer.Data[total_size - 1];
+        MyDebugPrint(actual_depth_buffer.NearDistance.ToString() + " vs " + bottom_right_depth.ToString());
+
+
     }
 
 }
