@@ -41,8 +41,9 @@ public class MainARSession : MonoBehaviour
         configuration.IsLightEstimationEnabled = true;
         configuration.PlaneDetection = PlaneDetection.Horizontal;
         configuration.IsAutoFocusEnabled = true;
-        configuration.IsDepthEnabled = true;
+        configuration.IsDepthEnabled = false;
         configuration.DepthTargetFrameRate = 10;
+        configuration.IsPalmDetectionEnabled = true;
         configuration.IsSharedExperienceEnabled = true;
 
         _ar_session.Run(configuration);
@@ -87,8 +88,8 @@ public class MainARSession : MonoBehaviour
 
     private void Update()
     {
-        SpawnAtHitPoint();
         PalmInfo();
+        SpawnAtHitPoint();
     }
 
     // Taken from Niantic's Hit Test sample
@@ -149,11 +150,12 @@ public class MainARSession : MonoBehaviour
 
     void PalmInfo()
     {
-        if (_ar_session.CurrentFrame.PalmDetections.Count == 0) {
+        if (_ar_session.CurrentFrame.PalmDetections == null) {
             MyDebugPrint("0 Palms detected");
             return;
         }
-        
+
+        MyDebugPrint(_ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
         foreach (var palm_detection in _ar_session.CurrentFrame.PalmDetections)
         {
             // Make a rectangle for each detected palm
