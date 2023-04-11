@@ -606,7 +606,7 @@ MonoBehaviour:
   _scanRange: 1.5
   _layerMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 768
   _visualise: 1
 --- !u!1001 &355873224
 PrefabInstance:
