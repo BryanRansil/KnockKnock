@@ -12,6 +12,7 @@ using TMPro;
 using Unity.VisualScripting.FullSerializer;
 using Niantic.ARDK.Extensions;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class MainARSession : MonoBehaviour
 {
@@ -158,15 +159,10 @@ public class MainARSession : MonoBehaviour
         MyDebugPrint(_ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
         foreach (var palm_detection in _ar_session.CurrentFrame.PalmDetections)
         {
-            // Make a rectangle for each detected palm
-            GameObject imageGameObject = new GameObject();
-            imageGameObject.transform.SetParent(canvas.transform);
-            Image rectangle = imageGameObject.AddComponent<Image>();
-            imageGameObject.transform.position = new Vector3(palm_detection.X, palm_detection.Y, 0);
-
-            // Color is red if we have low confidence, green if we have high
-            rectangle.color = new Color(255 * (1 - palm_detection.Confidence),
+            Rect palm_box = new Rect(palm_detection.Rect);
+            Color border_color = new Color(255 * (1 - palm_detection.Confidence),
                 255 * palm_detection.Confidence, 0);
+            EditorGUI.DrawRect(palm_box, border_color);
         }
     }
 
