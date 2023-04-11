@@ -12,26 +12,21 @@ using TMPro;
 using Unity.VisualScripting.FullSerializer;
 using Niantic.ARDK.Extensions;
 using UnityEngine.UI;
-using UnityEditor;
 
 public class MainARSession : MonoBehaviour
 {
     public GameObject plane_prefab;
     public GameObject spawn_prefab;
-    public TextMeshProUGUI text;
+    public CanvasUI my_canvas;
+
     public float spawn_vertical_offset;
     public Camera active_camera;
     public ARDepthManager depth_manager;
-    public Canvas canvas;
-    private Boolean _have_not_printed = true;
+
     private Touch _last_touch_type;
     private IARSession _ar_session;
     private readonly Dictionary<Guid, GameObject> planeLookup = new Dictionary<Guid, GameObject>();
 
-    void MyDebugPrint(string msg)
-    {
-        text.text = msg;
-    }
     // Start is called before the first frame update
     void Start()
     {
@@ -108,7 +103,7 @@ public class MainARSession : MonoBehaviour
         if (currentFrame == null)
             return;
 
-        MyDebugPrint("Current frame passed");
+        my_canvas.Print("Current frame passed");
 
         // Hit test from the touch position
         var results =
@@ -146,23 +141,25 @@ public class MainARSession : MonoBehaviour
 
         int total_size = checked((int)(actual_depth_buffer.Width * actual_depth_buffer.Height));
         var bottom_right_depth = actual_depth_buffer.Data[total_size - 1];
-        MyDebugPrint(actual_depth_buffer.NearDistance.ToString() + " vs " + bottom_right_depth.ToString());
+        my_canvas.Print(actual_depth_buffer.NearDistance.ToString() + " vs " + bottom_right_depth.ToString());
     }
 
     void PalmInfo()
     {
         if (_ar_session.CurrentFrame.PalmDetections == null) {
-            MyDebugPrint("0 Palms detected");
+            my_canvas.Print("0 Palms detected");
             return;
         }
 
-        MyDebugPrint(_ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
+        my_canvas.Print(_ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
         foreach (var palm_detection in _ar_session.CurrentFrame.PalmDetections)
         {
-            Rect palm_box = new Rect(palm_detection.Rect);
+            // Color is red if we have low confidence, green if we have high
             Color border_color = new Color(255 * (1 - palm_detection.Confidence),
                 255 * palm_detection.Confidence, 0);
-            EditorGUI.DrawRect(palm_box, border_color);
+
+            my_canvas.DrawRectangle(palm_detection.Rect, border_color);
+
         }
     }
 
