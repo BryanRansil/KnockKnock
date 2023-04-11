@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CanvasUI : MonoBehaviour
 {
@@ -13,12 +14,18 @@ public class CanvasUI : MonoBehaviour
 
     public void Print(string msg)
     {
+        if (SceneManager.GetActiveScene().name.Equals("Gameboard"))
+            return;
+        
         text.text = msg;
     }
 
     // Draw a single rectangle on the canvas.
     public void DrawRectangle(Rect rect, Color border_color)
     {
+        if (SceneManager.GetActiveScene().name.Equals("Gameboard"))
+            return;
+        
         if (canvas == null)
             return;
 
@@ -35,5 +42,16 @@ public class CanvasUI : MonoBehaviour
         palm_line.SetPosition(1, new Vector2(bottom_right_corner.x, rect.y));
         palm_line.SetPosition(2, new Vector2(bottom_right_corner.x, bottom_right_corner.y));
         palm_line.SetPosition(3, new Vector2(rect.x, bottom_right_corner.y));
+    }
+
+    public void SwitchScenes()
+    {
+        if (SceneManager.GetActiveScene().name.Equals("Gameboard"))
+        {
+            SceneManager.LoadScene("SampleScene");
+        } else
+        {
+            SceneManager.LoadScene("Gameboard");
+        }
     }
 }
