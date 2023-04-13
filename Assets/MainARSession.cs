@@ -26,6 +26,8 @@ public class MainARSession : MonoBehaviour
     private Touch _last_touch_type;
     private IARSession _ar_session;
     private readonly Dictionary<Guid, GameObject> planeLookup = new Dictionary<Guid, GameObject>();
+    private int _num_detections;
+    private int _call_count;
 
     // Start is called before the first frame update
     void Start()
@@ -151,7 +153,14 @@ public class MainARSession : MonoBehaviour
             return;
         }
 
-        my_canvas.Print(_ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
+        if (_num_detections == _ar_session.CurrentFrame.PalmDetections.Count)
+        {
+            return;
+        }
+        _call_count++;
+
+        my_canvas.Print(_call_count + " " + _ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
+        _num_detections = _ar_session.CurrentFrame.PalmDetections.Count;
         foreach (var palm_detection in _ar_session.CurrentFrame.PalmDetections)
         {
             // Color is red if we have low confidence, green if we have high
