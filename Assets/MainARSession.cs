@@ -153,14 +153,8 @@ public class MainARSession : MonoBehaviour
             return;
         }
 
-        if (_num_detections == _ar_session.CurrentFrame.PalmDetections.Count)
-        {
-            return;
-        }
-        _call_count++;
 
-        my_canvas.Print(_call_count + " " + _ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
-        _num_detections = _ar_session.CurrentFrame.PalmDetections.Count;
+        my_canvas.Print("1+ Palms detected");
         foreach (var palm_detection in _ar_session.CurrentFrame.PalmDetections)
         {
             // Color is red if we have low confidence, green if we have high

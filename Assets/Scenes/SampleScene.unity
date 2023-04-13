@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.44402242, g: 0.49316543, b: 0.5722324, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -851,10 +851,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8ab1b039bd51104cb15794695b44fa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plane_prefab: {fileID: 0}
+  plane_prefab: {fileID: 3728592323626759305, guid: 7063641af6e2e964e8f7951e9e7b72f1, type: 3}
   spawn_prefab: {fileID: 1430626716059794651, guid: eb0df34bfc9ff764fb8af826c9722aa2, type: 3}
   my_canvas: {fileID: 667592988}
-  spawn_vertical_offset: 1
+  spawn_vertical_offset: 0.3
   active_camera: {fileID: 963194227}
   depth_manager: {fileID: 556849114}
 --- !u!4 &775923414
