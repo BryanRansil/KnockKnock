@@ -12,6 +12,15 @@ public class MainARSession : MonoBehaviour
     void Start()
     {
         _ar_session = ARSessionFactory.Create();
+
+        var configuration = ARWorldTrackingConfigurationFactory.Create();
+        configuration.WorldAlignment = WorldAlignment.Gravity;
+        configuration.IsLightEstimationEnabled = true;
+        configuration.PlaneDetection = PlaneDetection.Horizontal;
+        configuration.IsAutoFocusEnabled = true;
+        configuration.IsDepthEnabled = false;
+        configuration.IsSharedExperienceEnabled = true;
+        _ar_session.Run(configuration);
     }
 
     // Update is called once per frame
