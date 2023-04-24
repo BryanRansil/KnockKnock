@@ -11,6 +11,7 @@ public class MainARSession : MonoBehaviour
 {
     public Camera active_camera;
     public GameObject spawn_prefab;
+    public CanvasUI my_canvas;
 
     IARSession _ar_session;
 
@@ -24,8 +25,9 @@ public class MainARSession : MonoBehaviour
         configuration.IsLightEstimationEnabled = true;
         configuration.PlaneDetection = PlaneDetection.Horizontal;
         configuration.IsAutoFocusEnabled = true;
-        configuration.IsDepthEnabled = false;
-        configuration.IsSharedExperienceEnabled = true;
+        configuration.IsDepthEnabled = true;
+        configuration.IsPalmDetectionEnabled = true;
+        configuration.IsSharedExperienceEnabled = false;
         _ar_session.Run(configuration);
     }
 
@@ -37,12 +39,13 @@ public class MainARSession : MonoBehaviour
 
     void ProcessInput()
     {
-        // Check if the user's touched the screen
-        var touch = PlatformAgnosticInput.GetTouch(0);
+        PalmProcessing();
 
-        if (touch.phase == TouchPhase.Began)
+        // Check if the user's touched the screen
+        if (PlatformAgnosticInput.touchCount > 0 &&
+            PlatformAgnosticInput.GetTouch(0).phase == TouchPhase.Began)
         {
-            SpawnObject(touch);
+            SpawnObject(PlatformAgnosticInput.GetTouch(0));
         }
     }
 
@@ -70,5 +73,21 @@ public class MainARSession : MonoBehaviour
         var position = closestHit.WorldTransform.ToPosition();
 
         GameObject.Instantiate(spawn_prefab, position, Quaternion.identity);
+    }
+
+    void PalmProcessing()
+    {
+        if (_ar_session.CurrentFrame.PalmDetections == null)
+        {
+            my_canvas.Print("0 Palms detected");
+            return;
+        }
+
+        my_canvas.Print(_ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
+
+        var palm_detection = _ar_session.CurrentFrame.PalmDetections[0];
+        // Color is red if we have low confidence, green if we have high
+        Color border_color = new Color((1 - palm_detection.Confidence), palm_detection.Confidence, 0);
+        my_canvas.DrawRectangle(palm_detection.Rect, border_color);
     }
 }
