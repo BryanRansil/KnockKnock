@@ -393,7 +393,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 782628379}
   palm_boundary_prefab: {fileID: 4079514327756362786, guid: 36954223193d57641b333dd129948420, type: 3}
-  palm_boundary: {fileID: 0}
+  detection_point_image_prefab: {fileID: 742478101283976242, guid: 47879057f5ce42f44a5069b0559dba12, type: 3}
   text: {fileID: 1329786358}
 --- !u!114 &782628377
 MonoBehaviour:
@@ -757,7 +757,7 @@ PrefabInstance:
       objectReference: {fileID: 4501392110370713671, guid: 99a6454115a034b2e9add187cf73f9eb, type: 3}
     - target: {fileID: 7963815754292762357, guid: 9f82ecc5afc3c4c2695d9cf37d46f25c, type: 3}
       propertyPath: _useInvisibleMaterial
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f82ecc5afc3c4c2695d9cf37d46f25c, type: 3}

@@ -5,6 +5,8 @@ using Niantic.ARDK.Utilities;
 using Niantic.ARDK.Utilities.Input.Legacy;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
+using UnityEditor;
 using UnityEngine;
 
 public class MainARSession : MonoBehaviour
@@ -26,9 +28,12 @@ public class MainARSession : MonoBehaviour
         configuration.PlaneDetection = PlaneDetection.Horizontal;
         configuration.IsAutoFocusEnabled = true;
         configuration.IsDepthEnabled = true;
+        configuration.DepthTargetFrameRate = 20;
         configuration.IsPalmDetectionEnabled = true;
         configuration.IsSharedExperienceEnabled = false;
         _ar_session.Run(configuration);
+
+        my_canvas.Print("Is Depth Supported? " + ARWorldTrackingConfigurationFactory.CheckDepthSupport() + ", is estimation supported? " + ARWorldTrackingConfigurationFactory.CheckDepthEstimationSupport());
     }
 
     // Update is called once per frame
@@ -79,13 +84,12 @@ public class MainARSession : MonoBehaviour
     {
         if (_ar_session.CurrentFrame.PalmDetections == null)
         {
-            my_canvas.Print("0 Palms detected");
+            my_canvas.Print("Is Depth Supported? " + ARWorldTrackingConfigurationFactory.CheckDepthSupport() + ", is estimation supported? " + ARWorldTrackingConfigurationFactory.CheckDepthEstimationSupport());
             return;
         }
 
-        my_canvas.Print(_ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
-
         var palm_detection = _ar_session.CurrentFrame.PalmDetections[0];
+        
         // Color is red if we have low confidence, green if we have high
         Color border_color = new Color((1 - palm_detection.Confidence), palm_detection.Confidence, 0);
         my_canvas.DrawRectangle(palm_detection.Rect, border_color);
