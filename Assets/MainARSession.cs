@@ -1,4 +1,6 @@
+using ARDK.Extensions;
 using Niantic.ARDK.AR;
+using Niantic.ARDK.AR.Awareness;
 using Niantic.ARDK.AR.Configuration;
 using Niantic.ARDK.AR.HitTest;
 using Niantic.ARDK.Utilities;
@@ -16,10 +18,13 @@ public class MainARSession : MonoBehaviour
     public CanvasUI my_canvas;
 
     IARSession _ar_session;
+    private ARHandTrackingManager _handTrackingManager;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Bryan, Start Called");
         _ar_session = ARSessionFactory.Create();
 
         var configuration = ARWorldTrackingConfigurationFactory.Create();
@@ -34,6 +39,8 @@ public class MainARSession : MonoBehaviour
         _ar_session.Run(configuration);
 
         my_canvas.Print("Is Depth Supported? " + ARWorldTrackingConfigurationFactory.CheckDepthSupport() + ", is estimation supported? " + ARWorldTrackingConfigurationFactory.CheckDepthEstimationSupport());
+        _handTrackingManager.HandTrackingUpdated += OnHandTrackingUpdated;
+
     }
 
     // Update is called once per frame
@@ -44,7 +51,7 @@ public class MainARSession : MonoBehaviour
 
     void ProcessInput()
     {
-        PalmProcessing();
+        //PalmProcessing();
 
         // Check if the user's touched the screen
         if (PlatformAgnosticInput.touchCount > 0 &&
@@ -79,6 +86,31 @@ public class MainARSession : MonoBehaviour
 
         GameObject.Instantiate(spawn_prefab, position, Quaternion.identity);
     }
+
+    private void OnHandTrackingUpdated(HumanTrackingArgs args)
+    {
+        Debug.Log("Bryan, OnHandTrackingUpdated");
+        var data = args.TrackingData;
+        if (data == null || data.AlignedDetections.Count == 0)
+        {
+            return;
+        }
+
+        Debug.Log("Bryan, creating rect & sending. ");
+        var detection = data.AlignedDetections[0];
+        Color border_color = new Color((1 - detection.Confidence), detection.Confidence, 0);
+        Debug.Log("Bryan, creating rect & sending. " + detection.Rect);
+        my_canvas.DrawRectangle(detection.Rect, border_color);
+
+        Debug.Log("Bryan, sent");
+        for (var i = 0; i < data.AlignedDetections.Count; i++)
+        {
+            var item = data.AlignedDetections[i];
+            Debug.Log(item.X + " " + item.Y + " -- " + item.Width + " " + item.Height);
+        }
+        Debug.Log("Bryan, Finished");
+    }
+
 
     void PalmProcessing()
     {
