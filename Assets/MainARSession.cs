@@ -12,6 +12,7 @@ public class MainARSession : MonoBehaviour
     public Camera active_camera;
     public GameObject spawn_prefab;
     public CanvasUI my_canvas;
+    public BoardMeshGenerator board_generator;
 
     IARSession _ar_session;
 
@@ -51,10 +52,12 @@ public class MainARSession : MonoBehaviour
 
     void SpawnObject(Touch touch)
     {
+        Debug.Log("Bryan, in SpawnObject");
         // If the ARSession isn't currently running, its CurrentFrame property will be null
         var currentFrame = _ar_session.CurrentFrame;
         if (currentFrame == null)
             return;
+        Debug.Log("Bryan, in SpawnObject passed 1");
 
         // Hit test from the touch position
         var results =
@@ -68,16 +71,21 @@ public class MainARSession : MonoBehaviour
 
         if (results.Count == 0)
             return;
+        Debug.Log("Bryan, in SpawnObject passed 2");
 
         var closestHit = results[0];
         var position = closestHit.WorldTransform.ToPosition();
 
+        Debug.Log("Bryan, calling Set Vector");
+        board_generator.SetVertex(position);
+        Debug.Log("Bryan, calling Instantiate at " + position);
         GameObject.Instantiate(spawn_prefab, position, Quaternion.identity);
     }
 
     void PalmProcessing()
     {
-        if (_ar_session.CurrentFrame.PalmDetections == null)
+        if (_ar_session.CurrentFrame == null ||
+            _ar_session.CurrentFrame.PalmDetections == null)
         {
             my_canvas.Print("0 Palms detected");
             return;
