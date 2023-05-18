@@ -5,7 +5,9 @@ using Niantic.ARDK.Utilities;
 using Niantic.ARDK.Utilities.Input.Legacy;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Android;
 
 public class MainARSession : MonoBehaviour
 {
@@ -16,9 +18,44 @@ public class MainARSession : MonoBehaviour
 
     IARSession _ar_session;
 
+    private string[] _required_permissions = { Permission.Camera, Permission.FineLocation };
+    private List<string> _acquired_permissions;
+
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Bryan In Start");
+#if UNITY_ANDROID
+        Debug.Log("Bryan Android Version 2");
+        var callbacks = new PermissionCallbacks();
+        callbacks.PermissionGranted += PermissionCallbacks_PermissionGranted;
+        List<string> acquired_permissions = new List<string>();
+
+        foreach (var permission in _required_permissions)
+        {
+            if (Permission.HasUserAuthorizedPermission(permission))
+            {
+                acquired_permissions.Add(permission);
+            }
+        }
+        Debug.Log("Bryan acquired permissions are " + acquired_permissions.Count);
+
+        if (acquired_permissions.Count == _required_permissions.Length)
+        {
+            StartAR();
+        } else
+        {
+            Permission.RequestUserPermissions(_required_permissions, callbacks);
+        }
+#else
+        Debug.Log("Bryan iOS Version");
+        StartAR();
+#endif
+    }
+
+    void StartAR()
+    {
+        Debug.Log("Bryan StartAR");
         _ar_session = ARSessionFactory.Create();
 
         var configuration = ARWorldTrackingConfigurationFactory.Create();
@@ -97,5 +134,16 @@ public class MainARSession : MonoBehaviour
         // Color is red if we have low confidence, green if we have high
         Color border_color = new Color((1 - palm_detection.Confidence), palm_detection.Confidence, 0);
         my_canvas.DrawRectangle(palm_detection.Rect, border_color);
+    }
+
+    internal void PermissionCallbacks_PermissionGranted(string permissionName)
+    {
+        if (_required_permissions.Contains(permissionName))
+        {
+            _acquired_permissions.Add(permissionName);
+        }
+
+        Debug.Log("Bryan. " + _required_permissions.Contains(permissionName) + " and now " + _acquired_permissions.Count + " vs " + _required_permissions.Length);
+            StartAR();
     }
 }
