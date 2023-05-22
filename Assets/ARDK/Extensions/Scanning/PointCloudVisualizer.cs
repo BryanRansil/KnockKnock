@@ -20,7 +20,6 @@ namespace Niantic.ARDK.Extensions.Scanning
   ///
   /// This visualizer uses the <see cref="IVoxelBuffer"/> to render the reconstructed voxels in the scene
   /// as a point cloud overlaid on the AR view.
-  [ExecuteInEditMode]
   public class PointCloudVisualizer : MonoBehaviour, IScanVisualizer
   {
     /// Material used to render the point cloud. 
@@ -203,7 +202,12 @@ namespace Niantic.ARDK.Extensions.Scanning
 
     private bool IsComputeBufferSupported()
     {
+#if UNITY_IOS
+      // Compute buffer seems to cause metal page faults on iOS
+      return false;
+#else
       return SystemInfo.maxComputeBufferInputsVertex >= 2;
+#endif
     }
 
     void OnRenderObject()

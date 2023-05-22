@@ -50,6 +50,8 @@ namespace Niantic.ARDK.Extensions.Scanning
     /// Whether to record location data in the scan. When capturing scans for VPS activation, this must be true.
     public bool recordLocation = true;
     private ILocationService _locationService;
+    
+    public Vector2 raycastResolution = new Vector2(256, 144);
 
 
     protected override void ListenToSession()
@@ -111,7 +113,7 @@ namespace Niantic.ARDK.Extensions.Scanning
         enableRaycastVisualization = visualizer.RequiresRaycastData();
         enableVoxelVisualization = visualizer.RequiresVoxelData();
       }
-      _scanner?.StartScanning(new ScanningOptions(enableRaycastVisualization, enableVoxelVisualization, maxScanDistance, scanRecordFps));
+      _scanner?.StartScanning(new ScanningOptions(enableRaycastVisualization, enableVoxelVisualization, maxScanDistance, scanRecordFps, raycastResolution));
     }
 
     /// Temporarily pauses a scan that is in progress.

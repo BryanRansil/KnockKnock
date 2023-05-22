@@ -1,5 +1,6 @@
 // Copyright 2022 Niantic, Inc. All Rights Reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using Niantic.ARDK.Utilities;
 using Niantic.ARDK.Utilities.Logging;
@@ -25,6 +26,8 @@ namespace Niantic.ARDK.AR.Scanning
 
       internal float MaxScanningDistance;
       internal long ScanCaptureInterval;
+      internal int RaycastResolutionWidth;
+      internal int RaycastResolutionHeight;
     }
 
     internal NativeScanningOptions _nativeScanningOptions;
@@ -51,6 +54,22 @@ namespace Niantic.ARDK.AR.Scanning
       get => _nativeScanningOptions.MaxScanningDistance;
       set => _nativeScanningOptions.MaxScanningDistance = Mathf.Clamp(value, 0.1f, 5.0f);
     }
+
+    /// The resolution of the raycast visualization's output images. The output quality is bound by both this resolution
+    /// as well as the quality of the underlying 3D reconstruction data. On devices without native depth support, the
+    /// underlying data is unlikely to be good enough to support resolution larger than 256x144.
+    public Vector2 RaycastResolution
+    {
+      get => new Vector2(_nativeScanningOptions.RaycastResolutionWidth, _nativeScanningOptions.RaycastResolutionHeight);
+      set
+      {
+        int clampedX = Mathf.Clamp((int) value.x, 10, 1024);
+        int clampedY = Mathf.Clamp((int) value.y, 10, 1024);
+
+        _nativeScanningOptions.RaycastResolutionWidth = clampedX;
+        _nativeScanningOptions.RaycastResolutionHeight = clampedY;
+      }
+    }
     
     /// Constructs scanning options.
     /// @param enableRaycastVisualization If true, raycast-based visualizations will be enabled.
@@ -62,8 +81,11 @@ namespace Niantic.ARDK.AR.Scanning
     ///        This should be set to a value between 1 and 15 and will be clamped to this range if not.
     ///        When capturing scans for VPS activation, this parameter should be set to 15 fps. In other cases,
     ///        a lower frame rate such as 3 can lead to faster reconstruction without loss of quality.
+    /// @param raycastResolution The resolution for the raycast visualization. The result image is bound by both this
+    ///        as well as the precision of the depth input. It is clamped between 10x10 and 1024x1024. Will have no
+    ///        effect if enableRaycastVisualization is false. Higher values impact performance. Default is 256x144.
     public ScanningOptions(bool enableRaycastVisualization = true, bool enableVoxelVisualization = true,
-      float maxScanningDistance = 5, int scanRecordFps = 3)
+      float maxScanningDistance = 5, int scanRecordFps = 3, Vector2 raycastResolution = default)
     {
       _nativeScanningOptions = default;
       _nativeScanningOptions.EnableRaycastVisualization = enableRaycastVisualization;
@@ -80,6 +102,24 @@ namespace Niantic.ARDK.AR.Scanning
         scanRecordFps = Mathf.Clamp(scanRecordFps, 1, 15);
       }
       _nativeScanningOptions.ScanCaptureInterval = (long)10000 / scanRecordFps;
+      
+      // C# doesn't allow defaulting of vector2 to a non-0 value. We assume setting resolution of 0 is the default.
+      if (raycastResolution.x == 0 || raycastResolution.y == 0)
+      {
+        raycastResolution = new Vector2(256, 144);
+      }
+
+      if (raycastResolution.x < 10 || raycastResolution.x > 1024 || raycastResolution.y < 10 ||
+          raycastResolution.y > 1024)
+      {
+        ARLog._WarnRelease($"Raycast resolution is out of bounds. Must be between 10 and 1024: {raycastResolution}");
+        int newX = Mathf.Clamp((int) raycastResolution.x, 10, 1024);
+        int newY = Mathf.Clamp((int) raycastResolution.y, 10, 1024);
+        raycastResolution = new Vector2(newX, newY);
+      }
+
+      this.RaycastResolution = raycastResolution;
+
     }
   }
 

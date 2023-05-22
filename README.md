@@ -4,7 +4,7 @@
 This project shows how current technologies can make a small pleasant experience for it's users. In of itself it doesn't have a lot of depth but by making such experiences we can experiment with how AR can be a strong form factor for immersive experiences.
 
 ## What is this project? ##
-It's a Unity project using the [Lightship ARDK](https://lightship.dev/products/ardk?hl=en) and Unity Editor Version 2021.3.22f1. While I occasionally test in iOS (with an iPhone 13 Pro) most of my testing is done on Android (with a Pixel 7).
+It's a Unity project using the [Lightship ARDK](https://lightship.dev/products/ardk?hl=en) (2.5.2) and Unity Editor Version 2021.3.22f1. While I occasionally test in iOS (with an iPhone 13 Pro) most of my testing is done on Android (with a Pixel 7).
 
 ## What's the end goal? ##
 An app where a user can easily and quickly drop a landscape on top of a surface (say a table or the floor). In my initial ideas the person would knock twice on the surface with their hand and the landscape would fan out from there, so the name Knock Knock was chosen. Here's a before/after picture to show the basic idea.

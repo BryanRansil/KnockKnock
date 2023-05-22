@@ -68,12 +68,12 @@ namespace Niantic.ARDK.AR.Awareness.Semantics
 
     private void OnFrameDropped(FrameUpdatedArgs args)
     {
-      // Wait for the first regular update
-      if (AwarenessBuffer == null)
+      var frame = args.Frame;
+      if (frame == null)
         return;
-
-      // Try to capture dropped keyframes
-      SetAwarenessBuffer(args.Frame.Semantics);
+      
+      // Process this dropped frame in case it is delivering a new keyframe
+      _ProcessDroppedFrame_NonMainThread(frame, frame.Semantics);
     }
 
     private void OnFrameUpdated(FrameUpdatedArgs args)

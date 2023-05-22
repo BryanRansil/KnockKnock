@@ -36,6 +36,18 @@ namespace Niantic.ARDK.AR.Awareness
 
     /// The CPU copy of the latest awareness buffer
     public TBuffer AwarenessBuffer { get; private set; }
+    
+    /// This is a secondary data holder for context awareness.
+    /// An ARFrame either delivers a new buffer or not. When it
+    /// does deliver one, it is a keyframe buffer. Sometimes
+    /// ARFrames are dropped due to performance. In the case
+    /// when an ARFrame gets dropped that was supposed to deliver
+    /// a keyframe awareness buffer, we use this backbuffer to
+    /// capture it. We need this secondary data holder because
+    /// FrameDropped events are not executed on the main thread,
+    /// therefore we cannot just simply update the main data holder
+    /// since it might be in use.
+    private TBuffer AwarenessBackBuffer { get; set; }
 
     /// The current interpolation setting.
     public InterpolationMode InterpolationMode { get; set; }
@@ -91,18 +103,14 @@ namespace Niantic.ARDK.AR.Awareness
     private bool _didReceiveFirstUpdate;
     private bool _didUpdateAwarenessBuffer;
 
-    protected void SetAwarenessBuffer(TBuffer buffer)
+    protected void _ProcessDroppedFrame_NonMainThread(IARFrame frame, TBuffer buffer) 
     {
       if (buffer == null)
         return;
-      
-      // Release the previous buffer, if any
-      AwarenessBuffer?.Dispose();
 
-      // Cache a copy of the new buffer
-      AwarenessBuffer = buffer.GetCopy() as TBuffer;
-
-      _didUpdateAwarenessBuffer = true;
+      // Capture the dropped frame for context awareness
+      AwarenessBackBuffer?.Dispose();
+      AwarenessBackBuffer = buffer.GetCopy() as TBuffer;
     }
 
     /// Updates the internal state of the context awareness stream.
@@ -124,9 +132,26 @@ namespace Niantic.ARDK.AR.Awareness
     {
       if (frame == null || frame.Camera == null) return;
 
-      // Writes _didUpdateAwarenessBuffer
-      SetAwarenessBuffer(buffer);
-      
+      // Try to use a captured dropped frame if we have no new keyframe
+      var update = buffer != null ? buffer : AwarenessBackBuffer;
+
+      // Did we obtain a new keyframe?
+      _didUpdateAwarenessBuffer = update != null;
+
+      // Cache the new keyframe, if any
+      if (_didUpdateAwarenessBuffer) 
+      {
+        // Release the previous buffer, if any
+        AwarenessBuffer?.Dispose();
+
+        // Cache a copy of the new buffer
+        AwarenessBuffer = update.GetCopy() as TBuffer;
+        
+        // Clean the cache
+        AwarenessBackBuffer?.Dispose();
+        AwarenessBackBuffer = null;
+      }
+
       // Processing this frame can continue without having a new
       // awareness buffer available. In that case, we just update
       // the display and interpolation transformations.
@@ -256,9 +281,6 @@ namespace Niantic.ARDK.AR.Awareness
             isKeyFrame: _didUpdateAwarenessBuffer
           )
         );
-        
-        // Reset update state
-        _didUpdateAwarenessBuffer = false;
       }
     }
 
@@ -348,10 +370,13 @@ namespace Niantic.ARDK.AR.Awareness
       texture.Apply(updateMipmaps: false);
     }
 
-    protected virtual void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposing) 
     {
-      if(disposing)
+      if (disposing) 
+      {
         AwarenessBuffer?.Dispose();
+        AwarenessBackBuffer?.Dispose();
+      }
     }
 
     ~AwarenessBufferProcessor()
