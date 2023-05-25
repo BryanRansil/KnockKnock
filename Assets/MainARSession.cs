@@ -6,6 +6,7 @@ using Niantic.ARDK.Utilities.Input.Legacy;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Android;
 
@@ -14,7 +15,7 @@ public class MainARSession : MonoBehaviour
     public Camera active_camera;
     public GameObject spawn_prefab;
     public CanvasUI my_canvas;
-    public BoardMeshGenerator board_generator;
+    public GameGenerator game_generator;
 
     IARSession _ar_session;
 
@@ -108,15 +109,19 @@ public class MainARSession : MonoBehaviour
 
         if (results.Count == 0)
             return;
-        Debug.Log("Bryan, in SpawnObject passed 2");
 
         var closestHit = results[0];
         var position = closestHit.WorldTransform.ToPosition();
 
-        Debug.Log("Bryan, calling Set Vector");
-        board_generator.SetVertex(position);
-        Debug.Log("Bryan, calling Instantiate at " + position);
-        GameObject.Instantiate(spawn_prefab, position, Quaternion.identity);
+        Debug.Log("Bryan, creating a board from that point");
+        game_generator.Populate(touch.position, position, _ar_session.CurrentFrame);
+    }
+
+    List<Vector3> MatrixToWorldCoordinates(Matrix4x4 matrix)
+    {
+        List<Vector3> world_coordinates = new List<Vector3>();
+        world_coordinates.Add(new Vector3(matrix.m03, matrix.m13, matrix.m23));
+        return world_coordinates;
     }
 
     void PalmProcessing()
