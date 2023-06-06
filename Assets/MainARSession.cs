@@ -1,8 +1,10 @@
 using Niantic.ARDK.AR;
+using Niantic.ARDK.AR.Awareness;
 using Niantic.ARDK.AR.Configuration;
 using Niantic.ARDK.AR.HitTest;
 using Niantic.ARDK.Utilities;
 using Niantic.ARDK.Utilities.Input.Legacy;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,18 +18,20 @@ public class MainARSession : MonoBehaviour
     public GameObject spawn_prefab;
     public CanvasUI my_canvas;
     public GameGenerator game_generator;
+    public GameObject button;
 
     IARSession _ar_session;
 
     private string[] _required_permissions = { Permission.Camera, Permission.FineLocation };
     private List<string> _acquired_permissions;
 
+    private Vector2 _button_screen_position;
+    private readonly float _click_distance = 0.04f;
+
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Bryan In Start");
 #if UNITY_ANDROID
-        Debug.Log("Bryan Android Version 2");
         var callbacks = new PermissionCallbacks();
         callbacks.PermissionGranted += PermissionCallbacks_PermissionGranted;
         List<string> acquired_permissions = new List<string>();
@@ -39,8 +43,8 @@ public class MainARSession : MonoBehaviour
                 acquired_permissions.Add(permission);
             }
         }
-        Debug.Log("Bryan acquired permissions are " + acquired_permissions.Count);
 
+        Debug.Log("In Start, require " + (_required_permissions.Length - acquired_permissions.Count) + " permissions before running.");
         if (acquired_permissions.Count == _required_permissions.Length)
         {
             StartAR();
@@ -49,14 +53,13 @@ public class MainARSession : MonoBehaviour
             Permission.RequestUserPermissions(_required_permissions, callbacks);
         }
 #else
-        Debug.Log("Bryan iOS Version");
         StartAR();
 #endif
-    }
+}
 
     void StartAR()
     {
-        Debug.Log("Bryan StartAR");
+        Debug.Log("StartAR");
         _ar_session = ARSessionFactory.Create();
 
         var configuration = ARWorldTrackingConfigurationFactory.Create();
@@ -68,42 +71,43 @@ public class MainARSession : MonoBehaviour
         configuration.IsPalmDetectionEnabled = true;
         configuration.IsSharedExperienceEnabled = false;
         _ar_session.Run(configuration);
+        _button_screen_position = new Vector2(Screen.width / 2, Screen.height / 2);
     }
 
     // Update is called once per frame
     void Update()
     {
-        ProcessInput();
-    }
-
-    void ProcessInput()
-    {
-        PalmProcessing();
-
-        // Check if the user's touched the screen
-        if (PlatformAgnosticInput.touchCount > 0 &&
-            PlatformAgnosticInput.GetTouch(0).phase == TouchPhase.Began)
+        var palm_detection = PalmProcessing();
+        if (palm_detection.HasValue)
         {
-            SpawnObject(PlatformAgnosticInput.GetTouch(0));
+            var actual_position = PercentToScreenCoord(palm_detection.Value.Rect.position);
+            if (PalmTouchButton(palm_detection.Value))
+                SpawnObject(button.transform.position);
+        }
+        else
+        {
+            SetButton();
         }
     }
 
-    void SpawnObject(Touch touch)
+    private Vector2 PercentToScreenCoord(Vector2 position)
     {
-        Debug.Log("Bryan, in SpawnObject");
-        // If the ARSession isn't currently running, its CurrentFrame property will be null
+        return new Vector2(position.x * active_camera.pixelWidth, position.y * active_camera.pixelHeight);
+    }
+
+    void SetButton()
+    {
+        Debug.Log("Bryan, calling SetButton");
         var currentFrame = _ar_session.CurrentFrame;
         if (currentFrame == null)
             return;
-        Debug.Log("Bryan, in SpawnObject passed 1");
 
-        // Hit test from the touch position
         var results =
-            _ar_session.CurrentFrame.HitTest
+            currentFrame.HitTest
             (
                 active_camera.pixelWidth,
                 active_camera.pixelHeight,
-                touch.position,
+                _button_screen_position,
                 ARHitTestResultType.All
             );
 
@@ -112,33 +116,67 @@ public class MainARSession : MonoBehaviour
 
         var closestHit = results[0];
         var position = closestHit.WorldTransform.ToPosition();
-
-        Debug.Log("Bryan, creating a board from that point");
-        game_generator.Populate(touch.position, position, _ar_session.CurrentFrame);
+        button.transform.position = position;
     }
 
-    List<Vector3> MatrixToWorldCoordinates(Matrix4x4 matrix)
+    private bool PalmTouchButton(Detection palm_detection)
     {
-        List<Vector3> world_coordinates = new List<Vector3>();
-        world_coordinates.Add(new Vector3(matrix.m03, matrix.m13, matrix.m23));
-        return world_coordinates;
+        var computed_position = GetWorldPosition(PercentToScreenCoord(palm_detection.Rect.position) +
+            new Vector2(palm_detection.Rect.width / 2, 0));
+
+        if (!computed_position.HasValue)
+            return false;
+
+        var palm_position = computed_position.Value;
+
+        Debug.Log("Bryan, " + palm_position + " vs " + button.transform.position + " is " + Vector3.Distance(palm_position, button.transform.position));
+        return Vector3.Distance(palm_position, button.transform.position) < _click_distance;
     }
 
-    void PalmProcessing()
+    Nullable<Vector3> GetWorldPosition(Vector2 screen_position)
+    {
+        var currentFrame = _ar_session.CurrentFrame;
+        if (currentFrame == null)
+            return null;
+
+        // Hit test from the touch position
+        var results =
+            _ar_session.CurrentFrame.HitTest
+            (
+                active_camera.pixelWidth,
+                active_camera.pixelHeight,
+                screen_position,
+                ARHitTestResultType.All
+            );
+
+        if (results.Count == 0)
+            return null;
+
+        var closestHit = results[0];
+        return closestHit.WorldTransform.ToPosition();
+    }
+
+    void SpawnObject(Vector3 world_position)
+    {
+        Debug.Log("Bryan, SpawnObject");
+        game_generator.Populate(world_position, _ar_session.CurrentFrame);
+    }
+
+    Nullable<Niantic.ARDK.AR.Awareness.Detection> PalmProcessing()
     {
         if (_ar_session.CurrentFrame == null ||
             _ar_session.CurrentFrame.PalmDetections == null)
         {
             my_canvas.Print("0 Palms detected");
-            return;
+            return null;
         }
-
-        my_canvas.Print(_ar_session.CurrentFrame.PalmDetections.Count + " Palms detected");
 
         var palm_detection = _ar_session.CurrentFrame.PalmDetections[0];
         // Color is red if we have low confidence, green if we have high
         Color border_color = new Color((1 - palm_detection.Confidence), palm_detection.Confidence, 0);
         my_canvas.DrawRectangle(palm_detection.Rect, border_color);
+
+        return palm_detection;
     }
 
     internal void PermissionCallbacks_PermissionGranted(string permissionName)
@@ -149,6 +187,6 @@ public class MainARSession : MonoBehaviour
         }
 
         Debug.Log("Bryan. " + _required_permissions.Contains(permissionName) + " and now " + _acquired_permissions.Count + " vs " + _required_permissions.Length);
-            StartAR();
+        StartAR();
     }
 }
