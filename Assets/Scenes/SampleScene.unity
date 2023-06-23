@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &40919614 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 17f84d69adcd0c044bd05eef6850d8d1, type: 3}
-  m_PrefabInstance: {fileID: 268060004}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &268060004
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -193,6 +188,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 17f84d69adcd0c044bd05eef6850d8d1, type: 3}
+--- !u!1 &268060005 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 17f84d69adcd0c044bd05eef6850d8d1, type: 3}
+  m_PrefabInstance: {fileID: 268060004}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,10 +322,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   active_camera: {fileID: 963194227}
-  spawn_prefab: {fileID: 9134148829690041423, guid: eb0df34bfc9ff764fb8af826c9722aa2, type: 3}
+  spawn_prefab: {fileID: 8620602951000951531, guid: fa46bb6738489a4498985e2b56b51a71, type: 3}
   my_canvas: {fileID: 782628376}
   game_generator: {fileID: 1664291236}
-  button: {fileID: 40919614}
+  button: {fileID: 268060005}
 --- !u!4 &775923414
 Transform:
   m_ObjectHideFlags: 0
@@ -797,7 +797,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3faa72af25c1a6f4d8a78229654d76bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boundary_prefab: {fileID: 9134148829690041423, guid: eb0df34bfc9ff764fb8af826c9722aa2, type: 3}
+  boundary_prefab: {fileID: 2438563398475672921, guid: 519b8b34b6e94b04eb10dae8aad591ff, type: 3}
+  terrain_prefabs:
+  - {fileID: 601924476020813921, guid: f8f2147c14860064fb012f7710ac0f33, type: 3}
+  - {fileID: 7773881927266382092, guid: c9d3b4c17e91f7f42ba1a303f80b1c22, type: 3}
+  - {fileID: 549033309383337113, guid: 364153a2c14606b4080429bbdad77597, type: 3}
   game_camera: {fileID: 963194227}
 --- !u!4 &1664291237
 Transform:
