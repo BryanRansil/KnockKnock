@@ -878,8 +878,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2988715159741781419, guid: b79f4734d3e2462186a55d546e80cfb4, type: 3}
     - target: {fileID: 7963815754292762357, guid: 9f82ecc5afc3c4c2695d9cf37d46f25c, type: 3}
-      propertyPath: _useInvisibleMaterial
+      propertyPath: _generateUnityMeshes
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963815754292762357, guid: 9f82ecc5afc3c4c2695d9cf37d46f25c, type: 3}
+      propertyPath: _useInvisibleMaterial
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f82ecc5afc3c4c2695d9cf37d46f25c, type: 3}
