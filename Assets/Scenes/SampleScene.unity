@@ -797,7 +797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3faa72af25c1a6f4d8a78229654d76bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boundary_prefab: {fileID: 9134148829690041423, guid: eb0df34bfc9ff764fb8af826c9722aa2, type: 3}
+  terrain_prefab: {fileID: 6059054022409161022, guid: e88635e2d5c01184fa6ab8d830b8a42f, type: 3}
   game_camera: {fileID: 963194227}
 --- !u!4 &1664291237
 Transform:

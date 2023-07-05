@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6059054022409161022
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9052169745859864326}
+  m_Layer: 0
+  m_Name: Crater Island
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9052169745859864326
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6059054022409161022}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.58848196, y: 0.7223787, z: 0.051978976}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5088610669360431597}
+  - {fileID: 7684558901702399199}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1984244720578500141
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 9052169745859864326}
+    m_Modifications:
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.0836733
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.36637866
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.375021
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952564561783476277, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+      propertyPath: m_Name
+      value: Ocean
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+--- !u!4 &7684558901702399199 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8155031100709602034, guid: 4ce6fed8ad64add429b111040419ecca, type: 3}
+  m_PrefabInstance: {fileID: 1984244720578500141}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4353445061821906457
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 9052169745859864326}
+    m_Modifications:
+    - target: {fileID: 8551763781266591642, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_Name
+      value: Crater Island Terrain
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.58848196
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.7223787
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.051978976
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+--- !u!4 &5088610669360431597 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8859965055650725876, guid: 8aa2c37e268ecd24f82f24bc59a8cd82, type: 3}
+  m_PrefabInstance: {fileID: 4353445061821906457}
+  m_PrefabAsset: {fileID: 0}

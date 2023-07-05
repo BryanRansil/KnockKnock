@@ -72,17 +72,24 @@ public class MainARSession : MonoBehaviour
         configuration.IsSharedExperienceEnabled = false;
         _ar_session.Run(configuration);
         _button_screen_position = new Vector2(Screen.width / 2, Screen.height / 2);
+        button.SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!button.active)
+            return;
+
         var palm_detection = PalmProcessing();
         if (palm_detection.HasValue)
         {
             var actual_position = PercentToScreenCoord(palm_detection.Value.Rect.position);
             if (PalmTouchButton(palm_detection.Value))
+            {
                 SpawnObject(button.transform.position);
+                button.SetActive(false);
+            }
         }
         else
         {

@@ -12,7 +12,7 @@ using UnityEngine.UIElements;
 */
 public class GameGenerator : MonoBehaviour
 {
-    public GameObject boundary_prefab;
+    public GameObject terrain_prefab;
     public Camera game_camera;
 
     private IARFrame _current_frame;
@@ -80,7 +80,7 @@ public class GameGenerator : MonoBehaviour
                                  _terrain_level,
                                  _left_boundary.z / 2 + _right_boundary.z / 2);
 
-        _terrain = GameObject.Instantiate(boundary_prefab, center, Quaternion.identity);
+        _terrain = GameObject.Instantiate(terrain_prefab, center, Quaternion.identity);
         _terrain_collider = _terrain.GetComponent<Collider>();
         _active = true;
     }
@@ -119,7 +119,7 @@ public class GameGenerator : MonoBehaviour
     {
         if (!_active)
             return;
-
+        /*
         _increment_time += Time.deltaTime;
 
         if (_increment_time < game_growth_delta)
@@ -131,6 +131,6 @@ public class GameGenerator : MonoBehaviour
             _terrain_collider.bounds.size.z >= Math.Abs(_left_boundary.z - _right_boundary.z))
         {
             _active = false;
-        }
+        }*/
     }
 }
